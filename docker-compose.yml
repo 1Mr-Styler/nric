@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  nric:
+    build: ./nric
+    restart: always
+    volumes:
+      - ./nric:/apps/home
+      - ./model:/model
+    ports:
+      - 8093:8080
+
