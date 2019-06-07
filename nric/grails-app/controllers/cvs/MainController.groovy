@@ -44,6 +44,7 @@ class MainController {
         def ic = mainService.dob(nric)
         flash.dob = ic[0]
         flash.pob = ic[1]
+        flash.address = mainService.address(ocr, "${flash.names[1]} ${flash.names[2]}")
 
         if (ocr.toLowerCase().contains("lelaki")) {
             flash.gender = "Male"

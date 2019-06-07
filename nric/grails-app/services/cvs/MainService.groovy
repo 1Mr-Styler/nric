@@ -4,10 +4,24 @@ package cvs
 class MainService {
 
     File toFile(def stuff) {
-        File convFile = new File("/model/" + stuff.getOriginalFilename().replace(" ", ""));
-        stuff.transferTo(convFile);
+        String name = stuff.getOriginalFilename().replace(" ", "")
 
-        convFile
+        if (!name.endsWith("pdf")) {
+            File convFile = new File("/model/" + name);
+            stuff.transferTo(convFile);
+
+            convFile
+        } else {
+            String filename = pdfToFile(stuff)
+            String cmd = "python2.7 /model/crop_to_target.py /model/$filename"
+            println(cmd)
+            def proc = cmd.execute()
+            proc.waitFor()
+
+
+            new File("/model/" + filename);
+        }
+
     }
 
     String processFile(String filename) {
@@ -20,7 +34,7 @@ class MainService {
     }
 
     String ocr(String file) {
-        StringBuilder pred = new StringBuilder()
+        /*StringBuilder pred = new StringBuilder()
 
         try {
             def proc = "tesseract /model/${file} /tmp/out --oem 1".execute()
@@ -36,11 +50,12 @@ class MainService {
 
         } catch (Exception e) {
             throw new Exception(e)
-        }
+        }*/
+        ocr(file, "/model/")
     }
 
     ArrayList<String> names(String ocr, String nric) {
-        String trimmed = ocr.trim()
+        /*String trimmed = ocr.trim()
 
         if (!nric.empty) {
             trimmed = trimmed.replace(nric, "")
@@ -58,9 +73,38 @@ class MainService {
             }
         }
 
+        names*/
+        names(ocr)
+    }
+
+    ArrayList<String> names(String ocr) {
+        String trimmed = ocr.trim()
+
+        ArrayList<String> names = new ArrayList<>()
+
+        trimmed.split("\n").each { line ->
+            println("Line: $line")
+            if (!line.trim().empty) {
+                if (line.split(' ').size() == 3) {
+                    names.addAll(line.split(" "))
+                    return
+                }
+            }
+        }
+
         names
     }
 
+    String address(String ocr, String name) {
+        String address = ocr.replace(name, "---")
+
+        address = address.split("---")[1]
+        println(address)
+
+        address = address.substring(0, address.indexOf("WARGANEGARA"))
+
+        address.replace("\n", " ")
+    }
 
     ArrayList<String> dob(String nric) {
         String ic = nric.replace("-", "")
@@ -182,5 +226,52 @@ class MainService {
                   "Mecca / Neutral Zone / No Information / Refugee / Refugee Article 1/1951 / United Nations Specialized Agency / United Nations Organization / Unspecified Nationality ",]
 
         pb[n]
+    }
+
+    String pdfToFile(def stuff) {
+
+        String pdfLocation = "/model/" + stuff.getOriginalFilename().replace(" ", "")
+
+        File pdf = new File(pdfLocation);
+        stuff.transferTo(pdf);
+
+        String newNameTemplate = stuff.getOriginalFilename().replace(".pdf", "-pdf").replace(" ", "")
+
+        //xtract PDF
+        def sout = new StringBuilder(), serr = new StringBuilder()
+        def proc = "python2.7 /model/pdf2jpg.py ${pdfLocation} /model/${newNameTemplate}".execute()
+        proc.consumeProcessOutput(sout, serr)
+        proc.waitFor()
+        println "out> $sout err> $serr"
+
+        String file = sout.toString().trim().replace("/model/", "")
+
+
+        file
+    }
+
+    String ocr(String file, String path) {
+        StringBuilder pred = new StringBuilder()
+        String filepath = "/model/"
+
+        try {
+            String cmd = "python2.7 ${path}r.pyc $filepath${file} checkpoint/model.ckpt-92900.data-00000-of-00001"
+            def proc = cmd.execute()
+            proc.waitFor()
+            def ypred = proc.in.getText('UTF-8').split("\n")
+            ypred[0] = null
+
+            for (String line : ypred) {
+                pred.append(line)
+                pred.append("\n")
+            }
+
+            println(pred)
+
+            return pred.toString()
+
+        } catch (Exception e) {
+            throw new Exception(e)
+        }
     }
 }
