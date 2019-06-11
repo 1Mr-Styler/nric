@@ -37,6 +37,9 @@ class MainController {
         def nircExtract = "/usr/bin/python2.7 /tmp/nric.py".execute()
         nircExtract.waitFor()
         String nric = nircExtract.text
+        def spl = nric.split("\n")
+        if (spl.size() > 1)
+            nric = spl[0]
         flash.nric = nric
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -48,7 +51,7 @@ class MainController {
 
         if (ocr.toLowerCase().contains("lelaki")) {
             flash.gender = "Male"
-        } else if (ocr.toLowerCase().contains("wanita")) {
+        } else if (ocr.toLowerCase().contains("perempuan")) {
             flash.gender = "Female"
         } else flash.gender = "N/A"
 

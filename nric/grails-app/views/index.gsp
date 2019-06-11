@@ -88,27 +88,9 @@
                                 <div class="form-group">
 
                                     <div class="col-xs-6">
-                                        <label for="first_name"><h4>First name</h4></label>
+                                        <label for="first_name"><h4>Names</h4></label>
                                         <input type="text" class="form-control" name="first_name" id="first_name"
-                                               placeholder="first name" value="${flash.names[0]}">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-
-                                    <div class="col-xs-6">
-                                        <label for="last_name"><h4>Last name</h4></label>
-                                        <input type="text" class="form-control" name="last_name" id="last_name"
-                                               placeholder="last name" value="${flash.names[1]}">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-
-                                    <div class="col-xs-6">
-                                        <label for="middle"><h4>Middle name</h4></label>
-                                        <input type="text" class="form-control" name="middle" id="middle"
-                                               placeholder="enter middle name" value="${flash.names[2]}">
+                                               placeholder="first name" value="${flash.names[0]} ${flash.names[1]} ${flash.names[2]}">
                                     </div>
                                 </div>
 
