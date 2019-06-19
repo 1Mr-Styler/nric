@@ -85,7 +85,7 @@ class MainService {
         trimmed.split("\n").each { line ->
             println("Line: $line")
             if (!line.trim().empty) {
-                if (line.split(' ').size() == 3) {
+                if (line.split(' ').size() >= 3 && line.split(' ').size() <= 4) {
                     names.addAll(line.split(" "))
                     return
                 }
@@ -97,6 +97,8 @@ class MainService {
 
     String address(String ocr, String name) {
         String address = ocr.replace(name, "---")
+        println("------>> " + name)
+        println("------>> " + address.replace("\n", " "))
 
         address = address.split("---")[1]
         println(address)
