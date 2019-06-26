@@ -85,7 +85,9 @@ class MainService {
         trimmed.split("\n").each { line ->
             println("Line: $line")
             if (!line.trim().empty) {
-                if (line.split(' ').size() >= 3 && line.split(' ').size() <= 4) {
+                def spl = line.split(" ")
+
+                if (spl.size() >= 3 && spl.size() <= 4 && spl[-1].length() > 1) {
                     names.addAll(line.split(" "))
                     return
                 }
@@ -96,16 +98,30 @@ class MainService {
     }
 
     String address(String ocr, String name) {
-        String address = ocr.replace(name, "---")
-        println("------>> " + name)
-        println("------>> " + address.replace("\n", " "))
+        /*String address = ocr.replace(name, "---")
 
         address = address.split("---")[1]
         println(address)
 
         address = address.substring(0, address.indexOf("WARGANEGARA"))
 
-        address.replace("\n", " ")
+        address.replace("\n", " ")*/
+
+        //~~~~~~~~~~~~~~ Extract Address ~~~~~~~~~~~~~
+        String nricTemplate = new File("/model/address.py").getText('UTF-8')
+
+        String nt = nricTemplate.replace("--text--", ocr.toLowerCase())
+        File nricpy = new File("/tmp/address.py")
+        nricpy.text = nt
+
+        def addrExtract = "/usr/bin/python2.7 /tmp/address.py".execute()
+        addrExtract.waitFor()
+        String addr = addrExtract.text
+//        def spl = addr.split("\n")
+//        if (spl.size() > 1)
+//            addr = spl[0]
+        addr.capitalize()
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     }
 
     ArrayList<String> dob(String nric) {

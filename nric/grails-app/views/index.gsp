@@ -129,7 +129,7 @@
 
                                     <div class="col-xs-6">
                                         <label for="address"><h4>Address</h4></label>
-                                        <input type="text" class="form-control" value="${flash.address}" id="address">
+                                        <textarea class="form-control" id="address">${flash.address}</textarea>
                                     </div>
                                 </div>
 
