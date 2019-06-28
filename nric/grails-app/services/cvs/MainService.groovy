@@ -18,7 +18,7 @@ class MainService {
             def proc = cmd.execute()
             proc.waitFor()
 
-
+            reduce("/model/$filename")
             new File("/model/" + filename);
         }
 
@@ -83,7 +83,6 @@ class MainService {
         ArrayList<String> names = new ArrayList<>()
 
         trimmed.split("\n").each { line ->
-            println("Line: $line")
             if (!line.trim().empty) {
                 def spl = line.split(" ")
 
@@ -291,5 +290,11 @@ class MainService {
         } catch (Exception e) {
             throw new Exception(e)
         }
+    }
+
+    void reduce(String filename) {
+        println("Optimizing $filename ...")
+        def proc = "python2.7 /model/reduce.pyc ${filename}".execute()
+        proc.waitFor()
     }
 }
