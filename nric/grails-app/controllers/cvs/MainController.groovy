@@ -6,8 +6,7 @@ class MainController {
     PassportService passportService
 
     def index() {
-
-        if(flash.isp)
+        if (flash.isp)
             render view: '/passport'
         else
             render view: '/index'
@@ -34,6 +33,9 @@ class MainController {
 
         if (passportService.detect(ocr) != null) {
             flash.data = passportService.process(ocr)
+            flash.data.expire = passportService.parseDate(flash.data.expire)
+            flash.data.issue = passportService.parseDate(flash.data.issue)
+            flash.data.dob = passportService.parseDate(flash.data.dob)
             flash.num = passportService.detect(ocr)
             flash.isp = true
 

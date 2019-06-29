@@ -23,8 +23,20 @@ class PassportService {
     String detect(String ocr) {
         def matcher = ocr =~ /(A[0-9]{8})/
 
-        if(matcher.find()){
+        if (matcher.find()) {
             matcher[0][0]
         } else null
+    }
+
+    String parseDate(String unparsed) {
+        if(unparsed == null)
+            return "NULL"
+        // 27 AUG IAO?T 23
+        String first = unparsed.take(7)
+        String last = unparsed[unparsed.size() - 2..-1]
+
+        last = Integer.parseInt(last) + 2000 > (Calendar.getInstance().get(Calendar.YEAR) + 5) ? "19" + last : "20" + last
+
+        first + last
     }
 }

@@ -146,18 +146,18 @@
                                 <div class="form-group">
 
                                     <div class="col-xs-6">
-                                        <label for="gender"><h4>Date of Expiry</h4></label>
+                                        <label for="gender"><h4>Date of Issue</h4></label>
                                         <input type="text" class="form-control" name="nationality"
-                                               value="${flash.data.expire.replace("I", "/")}">
+                                               value="${flash.data.issue}">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
 
                                     <div class="col-xs-6">
-                                        <label for="gender"><h4>Date of Issue</h4></label>
+                                        <label for="gender"><h4>Date of Expiry</h4></label>
                                         <input type="text" class="form-control" name="nationality"
-                                               value="${flash.data.issue.replace("I", "/")}">
+                                               value="${flash.data.expire}">
                                     </div>
                                 </div>
 
